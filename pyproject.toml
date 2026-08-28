@@ -1,0 +1,25 @@
+[project]
+name = "langc-couse"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "shiva.nemani", email = "shiva.nemani@cnhind.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "langchain>=1.3.18",
+    "langchain-anthropic>=1.7.0",
+    "langchain-core>=1.6.1",
+    "langchain-google-genai>=4.3.7",
+    "langchain-openai>=1.6.0",
+    "langgraph>=1.2.11",
+    "python-dotenv>=1.2.3",
+]
+
+[project.scripts]
+langc-couse = "langc_couse:main"
+
+[build-system]
+requires = ["uv_build>=0.12.7,<0.13.0"]
+build-backend = "uv_build"
