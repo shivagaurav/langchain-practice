@@ -9,7 +9,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 print(f"langchain-core version: {version("langchain-core")}")
 print("LangGraph:", version("langgraph"))
 print("LangChain Core:", version("langchain-core"))
-print("LangChain OpenAI:", version("langchain-openai"))
+print("LangChain Google Generative AI:", version("langchain-google-genai"))
 
 
 def main() -> None:
