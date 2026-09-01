@@ -30,11 +30,6 @@ def get_tagline():
 
 # get_tagline()
 
-# get tagline with new way of invoking models
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.chat_models import init_chat_model
-
 
 def get_tagline_new_way():
     # 1. Use .from_template() to create the prompt
@@ -62,4 +57,34 @@ def get_tagline_new_way():
 
     return chain
 
-get_tagline_new_way()
+# get_tagline_new_way()
+
+
+def excerise_multi_models():
+    """
+    EXERCISE: Create a function that:
+         1. Takes a question and a list of model names
+         2. Gets responses from all models
+         3. Returns a dict of {model_name: response}
+     
+         Test with: question="What is AI?", models=["gpt-4o-mini", "gpt-4o"]
+    """
+    def get_responses(qtn: str, model_names: list[str]) -> dict[str, str]:
+        responses = {}
+        for model_name in model_names:
+            model = init_chat_model(
+                model=model_name,
+                model_provider="google_genai",
+                temperature=0.7,
+                streaming=False,
+            )
+            response = model.invoke(qtn)
+            responses[model_name] = response.content
+        return responses
+
+    # Test the function
+    results = get_responses("What is AI?", ["gemini-2.5-flash", "gemini-3.5-flash"])
+    for model, answer in results.items():
+        print(f"Response from {model}: {answer}\n")
+
+excerise_multi_models()
