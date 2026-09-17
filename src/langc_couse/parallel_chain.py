@@ -5,7 +5,12 @@ load_dotenv()
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough, RunnableLambda, RunnableParallel
+from langchain_core.runnables import (
+    RunnablePassthrough,
+    RunnableLambda,
+    RunnableParallel,
+    RunnableBranch
+)
 
 
 llm = init_chat_model(
@@ -129,4 +134,39 @@ def demo_pass_though_chain():
     result = chain.invoke({"question": "who created langchain?"})
     print(f"Answer: {result}")
 
-demo_pass_though_chain()
+# demo_pass_though_chain()
+
+
+def demo_chain_branching():
+    #code prompt
+    code_prompt = ChatPromptTemplate.from_template("you are a code expert, answer the following question: {question}")
+
+    #general prompt
+    general_prompt = ChatPromptTemplate.from_template("you are a very helpful assistant, answer the following question: {question}")
+
+    #classifier prompt
+    classifier_prompt = ChatPromptTemplate.from_template("classify the following question into 'code' or 'general': {question}, give only the classification do not give any explanation")
+    classifier = classifier_prompt | llm | parser
+
+
+    #is_code_question
+    def is_code_question(input_dict):
+        classification = classifier.invoke(input_dict)
+        return "code" in classification.lower()
+
+    branch = RunnableBranch(
+        (is_code_question, code_prompt | llm | parser),
+        general_prompt | llm | parser)
+
+    questions = [
+        "how do I create a loop in python?",
+        "give me some suggestions for a good date with a girl"
+    ]
+
+    for q in questions:
+        result = branch.invoke({"question": q})
+        print(f"Question: {q}")
+        print(f"Answer: {result[:1000]}....")
+        print("*" * 80)
+
+demo_chain_branching()
